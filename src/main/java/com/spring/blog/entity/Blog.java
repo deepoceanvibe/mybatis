@@ -2,10 +2,12 @@ package com.spring.blog.entity;
 
 import lombok.*;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
+import java.util.Date;
+
 @Getter @Setter @ToString
 @AllArgsConstructor @NoArgsConstructor
-@Builder   // 빌더 패턴 생성자를 쓸 수 있게 해줌
+@Builder
 public class Blog {
 
     private long blogId;
@@ -15,4 +17,5 @@ public class Blog {
     private Date publishedAt;
     private Date updatedAt;
     private long blogCount;
+
 }

@@ -17,4 +17,18 @@ public interface BlogRepository {
     // 전체 데이터 조회
     List<Blog> findAll();
 
+    // 단일 조회
+    Blog findByid(long blogId);
+
+    // 저장
+    void save(Blog blog);
+
+    // 삭제
+    void deleteByid(long blogId);
+
+    // 업데이트
+    void update(Blog blog);
+
+
+
 }
