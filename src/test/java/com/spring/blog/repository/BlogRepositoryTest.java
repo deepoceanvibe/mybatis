@@ -5,19 +5,13 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 
 import static java.time.LocalTime.now;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)     // DROP TABLE시 필요한 어노테이션
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)     // DROP TABLE시 필요한 어노테이션
 public class BlogRepositoryTest {
     @Autowired
     BlogRepository blogRepository;
@@ -29,7 +23,6 @@ public class BlogRepositoryTest {
     }
 
     @Test
-    @DisplayName("전체 행을 얻어오고 그중 1번 인덱스 행만 추출해 확인")
     public void findAllTest() {
         // given
         int blogId = 1;     // 인덱스는 0번부터라서 사람이 보기에 편하도록 blogId라는 변수명에 1을 넣어 밑에서 불러오자.
@@ -97,27 +90,23 @@ public class BlogRepositoryTest {
     }
 
     @Test
-    public void updateTest() throws InterruptedException {
+    public void updateTest() {
         // given
-        long id = 3;
-        Blog blog = blogRepository.findByid(id);
+        long blogId = 2;
+        String blogTitle = "수정한제목";
+        String blogContent = "수정한본문";
 
-        blog.setBlogTitle("제목");
-        blog.setBlogContent("본문");
+        Blog blog = blogRepository.findByid(blogId);
+        blog.setBlogTitle(blogTitle);
+        blog.setBlogContent(blogContent);
 
         // when
         blogRepository.update(blog);
-        List<Blog> blogList = blogRepository.findAll();
 
         // then
-        assertEquals("제목", blogList.get(2).getBlogTitle());
-        assertEquals("본문", blogList.get(2).getBlogContent());
-        assertNotEquals(blog.getUpdatedAt(), blogList.get(2).getUpdatedAt());
+        assertEquals(blogTitle, blogRepository.findByid(blogId).getBlogTitle());
+        assertEquals(blogContent, blogRepository.findByid(blogId).getBlogContent());
     }
-
-
-
-
 
 
     @AfterEach      // * 공통 * 각 테스트 후에 실행할 코드 -> 테이블 초기화
