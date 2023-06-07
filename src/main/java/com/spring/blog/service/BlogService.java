@@ -20,5 +20,4 @@ public interface BlogService {
     // 수정
     void update(Blog blog);
 
-
 }
