@@ -3,7 +3,6 @@ package com.spring.blog.entity;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Getter @Setter @ToString
 @AllArgsConstructor @NoArgsConstructor
@@ -14,8 +13,8 @@ public class Blog {
     private String writer;
     private String blogTitle;
     private String blogContent;
-    private Date publishedAt;
-    private Date updatedAt;
+    private LocalDateTime publishedAt;
+    private LocalDateTime updatedAt;
     private long blogCount;
 
 }

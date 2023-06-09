@@ -31,7 +31,7 @@
 
         <div class="row">
             <div class="col-4">
-            <form action="/blog/update" method="POST"> <!--왜안될까??? 쉣..-->
+            <input type="hidden" value="${blog.blogId}" name="blogId">
             <input type="submit" class="btn btn-primary" value="제출">
             </form>     
             </div>
