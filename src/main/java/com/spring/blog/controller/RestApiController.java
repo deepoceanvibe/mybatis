@@ -30,7 +30,7 @@ public class RestApiController {
     }
 
     @RequestMapping(value = "/person", method = RequestMethod.GET)
-    public PersonDTO psrson() {
+    public PersonDTO person() {
         PersonDTO p = PersonDTO.builder().id(1L).name("좋코더").age(20).build();
         return p;
     }
@@ -94,16 +94,5 @@ public class RestApiController {
                 .headers(headers)   // 헤더 (필수는아님)
                 .body(result);  // 사용자에게 보여질 데이터
     }
-
-
-
-
-
-
-
-
-
-
-
 
 }
