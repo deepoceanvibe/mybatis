@@ -35,9 +35,7 @@
         <div class="col-1">본문</div>
         <div class="col-11">${blog.blogContent}</div>
   
-    </div>
-
-   
+    </div>   
 
 
 
@@ -51,5 +49,46 @@
     </form>
     <a href = "/blog/list" class="btn btn-secondary"> 목록으로 </a>
     </div>
+
+    
+    <div class="row">
+        <div id="replies">
+        </div>
+    </div>
+
+    <Script>
+    // 글 구성에 필요한 글 번호를 자바스크립트 변수에 저장
+    let blogId = "${blog.blogId}";
+
+    // blogId를 받아 전체 데이터를 JS 내부로 가져오는 함수 선언
+    function getAllReplies(blogId) {
+            let url = `http://localhost:8080/reply/${blogId}/all`;
+            fetch(url, {method:'get'})      // get 방식으로 위 주소에 요청넣기
+            .then((res) => res.json())      // 응답받은 요소 중 json만 뽑기 (res)
+            .then(data => {                 // 뽑아온 json으로 처리작업 하기 (res -> data)
+                console.log(data);
+           });
+    }
+
+    // 함수 호출
+    getAllReplies(blogId);
+
+    </Script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </body>
 </html>
