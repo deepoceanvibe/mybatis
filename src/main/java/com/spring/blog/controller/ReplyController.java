@@ -1,13 +1,13 @@
 package com.spring.blog.controller;
 
 import com.spring.blog.dto.ReplyFindByIdDTO;
+import com.spring.blog.dto.ReplyInsertDTO;
+import com.spring.blog.exception.NotFoundReplyByReplyIdException;
 import com.spring.blog.service.ReplyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,8 +30,36 @@ public class ReplyController {
         List<ReplyFindByIdDTO> AllReplies = replyService.findAllByBlogId(blogId);
 
         return ResponseEntity
-                .ok()
+                .ok()               // 상태 코드 안에 body 데이터를 같이 넣어도 된다
                 .body(AllReplies);
+    }
+    @RequestMapping(value = "/{replyId}", method = RequestMethod.GET)
+    public ResponseEntity<?> findByReplyId(@PathVariable long replyId) {        // 예외가 터졌을 때 에러메세지를 리턴해줘야하므로, 리턴타입을 ?로 둔다
+
+        ReplyFindByIdDTO replyFindByIdDTO = replyService.findByReplyId(replyId);
+
+        // 예외
+        if (replyFindByIdDTO == null) {
+            try {
+                throw new NotFoundReplyByReplyIdException("없는 댓글 번호를 조회했습니다.");
+            } catch (NotFoundReplyByReplyIdException e) {
+                return new ResponseEntity<>("찾는 번호가 없습니다.", HttpStatus.NOT_FOUND);
+            }
+        }
+
+            // return new ResponseEntity<ReplyFindByIdDTO>(replyFindByIdDTO, HttpStatus.OK);
+            return ResponseEntity
+                    .ok(replyFindByIdDTO);
+
+    }
+    // @RequestBody : json으로 들어온 데이터를 -> 자바객체로 역직렬화 해주는 역할
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ResponseEntity<String> insertReply(@RequestBody ReplyInsertDTO replyInsertDTO) {
+
+        replyService.save(replyInsertDTO);
+
+        return ResponseEntity
+                .ok("댓글 등록 성공!");
     }
 
 

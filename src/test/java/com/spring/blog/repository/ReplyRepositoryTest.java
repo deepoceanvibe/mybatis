@@ -109,7 +109,7 @@ public class ReplyRepositoryTest {
 
         // blogId번글의 전체 댓글을 가지고 온 다음 마지막 인덱스 요소만 변수에 저장 후,
         // getter를 이용해 위에서 넣은 * fixture와 일치하는지 검증!!! *
-        // resultList개수-1이 마지막인덱스번호이므로, resultList에서 마지막 인덱스 요소만 가져오기
+        // blogId에 해당하는 댓글 목록을 검색하고, 그 중에서 가장 최근(마지막) 댓글을 찾기
 
         // fixture 비교를 굳이 하는 이유 : 한글로 들어갔는지, DB에 정확하게 들어갔는지 알기 위해서
         List<ReplyFindByIdDTO> resultList = replyRepository.findAllByBlogId(blogId);

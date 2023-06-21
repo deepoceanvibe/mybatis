@@ -57,20 +57,45 @@
     </div>
 
     <Script>
-    // 글 구성에 필요한 글 번호를 자바스크립트 변수에 저장
+    // 1. 글 구성에 필요한 글 번호를 자바스크립트 변수에 저장
     let blogId = "${blog.blogId}";
 
-    // blogId를 받아 전체 데이터를 JS 내부로 가져오는 함수 선언
-    function getAllReplies(blogId) {
-            let url = `http://localhost:8080/reply/${blogId}/all`;
+    // <%-- 3. 비동기 처리방식 : blogId를 받아 전체 데이터를 JS 내부로 가져오는 함수 선언 (blogId=전역변수 id=지역변수)
+    // jsp파일에서 js문법을 쓸 때는 ${}앞에 \를 붙여주자 --%>
+    function getAllReplies(id) {
+            let url = `http://localhost:8080/reply/\${id}/all`;
+            let str = "";                   // 받아온 json을 표현할 html 코드를 저장할 문자열 선언
+
             fetch(url, {method:'get'})      // get 방식으로 위 주소에 요청넣기
-            .then((res) => res.json())      // 응답받은 요소 중 json만 뽑기 (res)
-            .then(data => {                 // 뽑아온 json으로 처리작업 하기 (res -> data)
-                console.log(data);
+            .then((res) => res.json())      // 응답받은 요소 중 res에 담아서 -> json만 뽑기
+            .then(replies => {              // 뽑아온 json으로 -> data에 담아서 처리하기
+
+                console.log(replies);       // 배열
+
+                // for(reply of replies) {     
+                //    console.log(reply);     // 배열 안에 있는 댓글들 for문으로 풀기 -> str에 저장
+                //    str += `<h3>글쓴이 : \${reply.replyWriter}, 댓글내용 : \${reply.replyContent}</h3>`;
+                //}
+                //console.log(str);
+
+                
+                // .map을 이용한 간결한 반복문
+                replies.map((reply, i) => {    // 첫 파라미터 : 반복대상자료, 두번째 파라미터 : 순번
+                    str += `<h3>\${i+1}번째 댓글 || 글쓴이 : \${reply.replyWriter}, 댓글내용 : \${reply.replyContent}</h3>`;
+                });
+
+                console.log(str);
+                // #replies 요소를 변수에 저장한다.
+                const $replies = document.getElementById("replies");
+                // #replies의 innerHTML에 str을 대입해 실제 화면에 출력하기
+                $replies.innerHTML = str;
+
+
+
            });
     }
 
-    // 함수 호출
+    // 2. 함수 호출
     getAllReplies(blogId);
 
     </Script>
