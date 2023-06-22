@@ -147,5 +147,20 @@ public class ReplyRepositoryTest {
         assertTrue(result.getUpdatedAt().isAfter(result.getPublishedAt()));
     }
 
+    @Test
+    @Transactional
+    @DisplayName("blogId가 2인 글을 삭제하면, 그 글의 전체 댓글이 다 0개")
+    public void deleteAllByBlogIdTest() {
+        // given
+        long blogId = 2;
+
+        // when
+        replyRepository.deleteAllByBlogId(blogId);
+
+        // then
+        List<ReplyFindByIdDTO> replyList = replyRepository.findAllByBlogId(blogId);
+        assertEquals(0, replyList.size());
+    }
+
 
 }

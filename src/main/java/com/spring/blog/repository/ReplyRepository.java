@@ -16,4 +16,7 @@ public interface ReplyRepository {
     void save(ReplyInsertDTO replyInsertDTO);
     void update(ReplyUpdateDTO replyUpdateDTO);
 
+    // blogId를 받아 그 글의 전체 댓글을 싹다 삭제하기
+    void deleteAllByBlogId(long blogId);
+
 }

@@ -19,5 +19,7 @@ public interface BlogService {
     void save(Blog blog);
     // 수정
     void update(Blog blog);
+    // 전체댓삭제
+    void deleteAllByBlogId(long blogId);
 
 }

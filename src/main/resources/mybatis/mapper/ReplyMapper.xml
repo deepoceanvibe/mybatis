@@ -50,6 +50,13 @@
         WHERE reply_id = #{replyId}
     </update>
 
+    <delete id="deleteAllByBlogId" parameterType="long">
+        DELETE FROM
+            reply
+        WHERE
+            blog_id = #{blogId}
+    </delete>
+
 
 
 </mapper>

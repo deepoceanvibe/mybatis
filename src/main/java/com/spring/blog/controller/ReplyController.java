@@ -52,7 +52,7 @@ public class ReplyController {
                     .ok(replyFindByIdDTO);
 
     }
-    // @RequestBody : json으로 들어온 데이터를 -> 자바객체로 역직렬화 해주는 역할
+    // @RequestBody : json으로 들어온 데이터를 -> 자바객체(에 저장)로 역직렬화 해주는 역할
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<String> insertReply(@RequestBody ReplyInsertDTO replyInsertDTO) {
 
@@ -60,6 +60,14 @@ public class ReplyController {
 
         return ResponseEntity
                 .ok("댓글 등록 성공!");
+    }
+    @RequestMapping(value = "/{replyId}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteReply(@PathVariable long replyId) {
+
+        replyService.deleteByReplyId(replyId);
+
+        return ResponseEntity
+                .ok("댓글 삭제가 완료되었습니다.");
     }
 
 

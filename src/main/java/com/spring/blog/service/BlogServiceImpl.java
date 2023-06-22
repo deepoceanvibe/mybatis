@@ -2,8 +2,10 @@ package com.spring.blog.service;
 
 import com.spring.blog.entity.Blog;
 import com.spring.blog.repository.BlogRepository;
+import com.spring.blog.repository.ReplyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,12 +14,17 @@ import java.util.List;
 // Controller -> Service -> blogRepository -> DB
 @Service
 public class BlogServiceImpl implements BlogService {
+
     BlogRepository blogRepository;
+    ReplyRepository replyRepository;
+
 
     @Autowired     // 생성자 주입
-    public BlogServiceImpl(BlogRepository blogRepository) {
+    public BlogServiceImpl(BlogRepository blogRepository, ReplyRepository replyRepository) {
         this.blogRepository = blogRepository;
+        this.replyRepository = replyRepository;
     }
+
     @Override
     public List<Blog> findAll() {
         return blogRepository.findAll();
@@ -26,6 +33,14 @@ public class BlogServiceImpl implements BlogService {
     public Blog findByid(long blogId) {
         return blogRepository.findByid(blogId);
     }
+
+    @Transactional
+    @Override   // 둘다 실행되던지, 둘다 안되던지
+    public void deleteAllByBlogId(long blogId) {
+        replyRepository.deleteAllByBlogId(blogId);
+        blogRepository.deleteByid(blogId);
+    }
+
     @Override
     public void deleteByid(long blogId) {
         blogRepository.deleteByid(blogId);
