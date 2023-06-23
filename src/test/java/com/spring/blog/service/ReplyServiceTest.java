@@ -1,9 +1,8 @@
 package com.spring.blog.service;
 
-import com.spring.blog.dto.ReplyFindByIdDTO;
-import com.spring.blog.dto.ReplyInsertDTO;
-import com.spring.blog.dto.ReplyUpdateDTO;
-import com.spring.blog.entity.Reply;
+import com.spring.blog.dto.ReplyResponseDTO;
+import com.spring.blog.dto.ReplyCreateRequestDTO;
+import com.spring.blog.dto.ReplyUpdateRequestDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,7 +24,7 @@ public class ReplyServiceTest {
         // given
         long blogId = 2;
         // when
-        List<ReplyFindByIdDTO> replyList = replyService.findAllByBlogId(blogId);
+        List<ReplyResponseDTO> replyList = replyService.findAllByBlogId(blogId);
         // then
         assertEquals(4, replyList.size());
     }
@@ -51,7 +50,7 @@ public class ReplyServiceTest {
         String replyWriter = "치즈";
 
         // when
-        ReplyFindByIdDTO result = replyService.findByReplyId(replyId);
+        ReplyResponseDTO result = replyService.findByReplyId(replyId);
 
         // then
         assertEquals(replyWriter, result.getReplyWriter());
@@ -81,18 +80,18 @@ public class ReplyServiceTest {
         String replyWriter = "작성자";
         String replyContent = "댓글내용";
 
-        ReplyInsertDTO replyInsertDTO = ReplyInsertDTO.builder()
+        ReplyCreateRequestDTO replyCreateRequestDTO = ReplyCreateRequestDTO.builder()
                 .blogId(blogId)
                         .replyWriter(replyWriter)
                                 .replyContent(replyContent)
                                         .build();
 
         // when
-        replyService.save(replyInsertDTO);
+        replyService.save(replyCreateRequestDTO);
 
         // then
-        List<ReplyFindByIdDTO> resultList = replyService.findAllByBlogId(blogId);
-        ReplyFindByIdDTO result = resultList.get(resultList.size() - 1);
+        List<ReplyResponseDTO> resultList = replyService.findAllByBlogId(blogId);
+        ReplyResponseDTO result = resultList.get(resultList.size() - 1);
 
         assertEquals(replyWriter, result.getReplyWriter());
         assertEquals(replyContent, result.getReplyContent());
@@ -106,17 +105,17 @@ public class ReplyServiceTest {
         String replyWriter = "개소리하면짖는야옹이";
         String replyContent = "미야옹";
 
-        ReplyUpdateDTO replyUpdateDTO = ReplyUpdateDTO.builder()
+        ReplyUpdateRequestDTO replyUpdateRequestDTO = ReplyUpdateRequestDTO.builder()
                 .replyId(replyId)
                 .replyWriter(replyWriter)
                 .replyContent(replyContent)
                 .build();
 
         // when
-        replyService.update(replyUpdateDTO);
+        replyService.update(replyUpdateRequestDTO);
 
         // then
-        ReplyFindByIdDTO updateResult = replyService.findByReplyId(replyId);
+        ReplyResponseDTO updateResult = replyService.findByReplyId(replyId);
 
         assertNotEquals(updateResult.getUpdatedAt(), updateResult.getPublishedAt());
         assertEquals(replyWriter, updateResult.getReplyWriter());

@@ -34,9 +34,11 @@ public class BlogServiceImpl implements BlogService {
         return blogRepository.findByid(blogId);
     }
 
-    @Transactional
-    @Override   // 둘다 실행되던지, 둘다 안되던지
+
+    @Override
+    @Transactional // 둘다 실행되던지, 둘다 안되던지
     public void deleteAllByBlogId(long blogId) {
+        // 선댓삭후, 글삭제
         replyRepository.deleteAllByBlogId(blogId);
         blogRepository.deleteByid(blogId);
     }

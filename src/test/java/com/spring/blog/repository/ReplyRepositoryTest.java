@@ -1,9 +1,8 @@
 package com.spring.blog.repository;
 
-import com.spring.blog.dto.ReplyFindByIdDTO;
-import com.spring.blog.dto.ReplyInsertDTO;
-import com.spring.blog.dto.ReplyUpdateDTO;
-import com.spring.blog.entity.Reply;
+import com.spring.blog.dto.ReplyResponseDTO;
+import com.spring.blog.dto.ReplyCreateRequestDTO;
+import com.spring.blog.dto.ReplyUpdateRequestDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,7 @@ public class ReplyRepositoryTest {
         long blogId = 2;
 
         // when
-        List<ReplyFindByIdDTO> replyList = replyRepository.findAllByBlogId(blogId);
+        List<ReplyResponseDTO> replyList = replyRepository.findAllByBlogId(blogId);
 
         // then
         assertEquals(4, replyList.size());
@@ -40,11 +39,11 @@ public class ReplyRepositoryTest {
         long replyId = 3;
 
         // when
-        ReplyFindByIdDTO replyFindByIdDTO = replyRepository.findByReplyId(replyId);
+        ReplyResponseDTO replyResponseDTO = replyRepository.findByReplyId(replyId);
 
         // then
-        assertEquals("나무", replyFindByIdDTO.getReplyWriter());
-        assertEquals(3, replyFindByIdDTO.getReplyId());
+        assertEquals("나무", replyResponseDTO.getReplyWriter());
+        assertEquals(3, replyResponseDTO.getReplyId());
     }
 
     @Test
@@ -73,14 +72,14 @@ public class ReplyRepositoryTest {
         String replyContent = "댓글내용";
         int lastBlogIndex = 0;
 
-        ReplyInsertDTO replyInsertDTO = ReplyInsertDTO.builder()
+        ReplyCreateRequestDTO replyCreateRequestDTO = ReplyCreateRequestDTO.builder()
                 .blogId(blogId)
                 .replyWriter(replyWriter)
                 .replyContent(replyContent)
                 .build();
 
         // when
-        replyRepository.save(replyInsertDTO);
+        replyRepository.save(replyCreateRequestDTO);
 
         // then
         assertEquals(replyWriter, replyRepository.findAllByBlogId(blogId).get(lastBlogIndex).getReplyWriter());
@@ -96,14 +95,14 @@ public class ReplyRepositoryTest {
         String replyWriter = "작성자";
         String replyContent = "댓글내용";
 
-        ReplyInsertDTO replyInsertDTO = ReplyInsertDTO.builder()
+        ReplyCreateRequestDTO replyCreateRequestDTO = ReplyCreateRequestDTO.builder()
                 .blogId(blogId)
                 .replyWriter(replyWriter)
                 .replyContent(replyContent)
                 .build();
 
         // when
-        replyRepository.save(replyInsertDTO);
+        replyRepository.save(replyCreateRequestDTO);
 
         // then
 
@@ -112,8 +111,8 @@ public class ReplyRepositoryTest {
         // blogId에 해당하는 댓글 목록을 검색하고, 그 중에서 가장 최근(마지막) 댓글을 찾기
 
         // fixture 비교를 굳이 하는 이유 : 한글로 들어갔는지, DB에 정확하게 들어갔는지 알기 위해서
-        List<ReplyFindByIdDTO> resultList = replyRepository.findAllByBlogId(blogId);
-        ReplyFindByIdDTO result = resultList.get(resultList.size() - 1);
+        List<ReplyResponseDTO> resultList = replyRepository.findAllByBlogId(blogId);
+        ReplyResponseDTO result = resultList.get(resultList.size() - 1);
 
         // 단언문
         assertEquals(replyWriter, result.getReplyWriter());
@@ -129,17 +128,17 @@ public class ReplyRepositoryTest {
         String replyWriter = "코로그";
         String replyContent = "난코로그선인장이양";
 
-        ReplyUpdateDTO replyUpdateDTO = ReplyUpdateDTO.builder()
+        ReplyUpdateRequestDTO replyUpdateRequestDTO = ReplyUpdateRequestDTO.builder()
                 .replyId(replyId)
                         .replyWriter(replyWriter)
                                 .replyContent(replyContent)
                                         .build();
 
         // when
-        replyRepository.update(replyUpdateDTO);
+        replyRepository.update(replyUpdateRequestDTO);
 
         // then
-        ReplyFindByIdDTO result = replyRepository.findByReplyId(replyId);
+        ReplyResponseDTO result = replyRepository.findByReplyId(replyId);
 
         assertEquals(replyWriter, result.getReplyWriter());
         assertEquals(replyContent, result.getReplyContent());
@@ -158,7 +157,7 @@ public class ReplyRepositoryTest {
         replyRepository.deleteAllByBlogId(blogId);
 
         // then
-        List<ReplyFindByIdDTO> replyList = replyRepository.findAllByBlogId(blogId);
+        List<ReplyResponseDTO> replyList = replyRepository.findAllByBlogId(blogId);
         assertEquals(0, replyList.size());
     }
 

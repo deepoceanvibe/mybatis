@@ -1,10 +1,10 @@
 package com.spring.blog.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.spring.blog.dto.ReplyFindByIdDTO;
-import com.spring.blog.dto.ReplyInsertDTO;
+import com.spring.blog.dto.ReplyResponseDTO;
+import com.spring.blog.dto.ReplyCreateRequestDTO;
+import com.spring.blog.dto.ReplyUpdateRequestDTO;
 import com.spring.blog.repository.ReplyRepository;
-import jdk.jshell.spi.ExecutionControlProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
@@ -105,7 +104,7 @@ class ReplyControllerTest {
         String replyWriter = "냐옹";
         String replyContent = "난냐옹이다냐옹";
 
-        ReplyInsertDTO replyInsertDTO = ReplyInsertDTO.builder()
+        ReplyCreateRequestDTO replyCreateRequestDTO = ReplyCreateRequestDTO.builder()
                 .blogId(blogId)
                 .replyWriter(replyWriter)
                 .replyContent(replyContent)
@@ -114,16 +113,17 @@ class ReplyControllerTest {
         String url = "/reply";
         String url2 = "/reply/1/all";
 
-        // 자바 객체 -> json 으로 직렬화
-        final String requestBody = objectMapper.writeValueAsString(replyInsertDTO);
+        // 자바 fixture 객체 -> json 으로 직렬화
+        final String requestBody = objectMapper.writeValueAsString(replyCreateRequestDTO);
 
-        // when : 직렬화된 json 데이터를 이용해 post 방식으로 url에 요청
+        // when : 직렬화된 requestBody post방식으로 url에 요청
         mockMvc.perform(post(url)   // /reply주소에 post방식으로 요청을 넣고
                         .contentType(MediaType.APPLICATION_JSON)    // 전달 자료는 json이며
                         .content(requestBody)); // 위에서 직렬화한 requestBody 변수를 전달
 
 
         // then
+        // 1번 글의 전체댓글 수를 불러오기
         final ResultActions result = mockMvc.perform(get(url2)
                                     .accept(MediaType.APPLICATION_JSON));
 
@@ -133,7 +133,6 @@ class ReplyControllerTest {
                 .andExpect(jsonPath("$[0].replyContent").value(replyContent));
 
     }
-
     @Test
     @Transactional
     @DisplayName("댓글번호 3번을 삭제할 경우, 글번호 2번의 댓글수는 3개, 해당댓글은 null이다.")
@@ -147,8 +146,39 @@ class ReplyControllerTest {
         mockMvc.perform(delete(url).accept(MediaType.TEXT_PLAIN));
 
         // then
-        List<ReplyFindByIdDTO> allReplies = replyRepository.findAllByBlogId(blogId);
+        List<ReplyResponseDTO> allReplies = replyRepository.findAllByBlogId(blogId);
         assertEquals(3, allReplies.size());
         assertNull(replyRepository.findByReplyId(replyId));
+    }
+    @Test
+    @Transactional
+    @DisplayName("댓글번호 5번을 조회했을시, replyWriter가 우유, replyContent가 우유시러로 바뀌어있다.")
+    public void updateReplyTest() throws Exception {
+        // given
+        String replyWriter = "우유";
+        String replyContent = "우유시러";
+
+        ReplyUpdateRequestDTO replyUpdateRequestDTO = ReplyUpdateRequestDTO.builder()
+                .replyWriter(replyWriter)
+                .replyContent(replyContent)
+                .build();
+
+        String url = "http://localhost:8080/reply/5";
+        String url2 = "/reply/3/all";
+
+        final String requestBody = objectMapper.writeValueAsString(replyUpdateRequestDTO);
+
+        // when
+        mockMvc.perform(put(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody));
+
+        // then
+        final ResultActions result = mockMvc.perform(get(url2)
+                .accept(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].replyWriter").value(replyWriter))
+                .andExpect(jsonPath("$[0].replyContent").value(replyContent));
     }
 }

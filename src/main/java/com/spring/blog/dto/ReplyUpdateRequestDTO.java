@@ -5,16 +5,15 @@ import lombok.*;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 @Builder @ToString
-// 글 생성 DTO
-public class ReplyInsertDTO {
-    private long blogId;
+public class ReplyUpdateRequestDTO {
+    private long replyId;
     private String replyWriter;
     private String replyContent;
 
-    // 엔터티를 DTO로 변환
-    public ReplyInsertDTO(Reply reply) {
-        this.blogId = reply.getBlogId();
+    public ReplyUpdateRequestDTO(Reply reply) {
+        this.replyId = reply.getReplyId();
         this.replyWriter = reply.getReplyWriter();
         this.replyContent = reply.getReplyContent();
     }
+
 }
