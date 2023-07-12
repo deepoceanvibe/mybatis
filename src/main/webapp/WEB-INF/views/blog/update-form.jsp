@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="container">
-        <form action="/blog/update-form" method="POST">
+        <form action="/blog/update" method="POST">
 
         <div class="row">
             <div class="col-3">
