@@ -6,6 +6,9 @@ import com.spring.blog.repository.BlogRepository;
 import com.spring.blog.repository.ReplyJPARepository;
 import com.spring.blog.repository.ReplyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,10 +39,15 @@ public class BlogServiceImpl implements BlogService {
         this.replyJPARepository = replyJPARepository;
     }
 
+    // 페이징 처리
     @Override
-    public List<Blog> findAll() {
-        // mybatis용 return blogRepository.findAll();
-        return blogJPARepository.findAll();
+    public Page<Blog> findAll(Long pageNum) {
+
+        // 페이징 처리 먼저 객체로 생성 (2페이지부터, 글을 10개씩 끊어서 보여줘라)  // 3번페이지 첫글번호:32
+        Pageable pageable = PageRequest.of(getCalibratedPageNum(pageNum)-1, 10);
+
+        // 생성된 페이징 정보를 파라미터로 제공해서 findAll 호출
+        return blogJPARepository.findAll(pageable);
     }
 
     @Override
@@ -52,8 +60,8 @@ public class BlogServiceImpl implements BlogService {
     @Transactional // 둘다 실행되던지, 둘다 안되던지
     public void deleteAllByBlogId(long blogId) {
         // 선댓삭후, 글삭제
-        replyRepository.deleteAllByBlogId(blogId);
-        blogRepository.deleteByid(blogId);
+        replyJPARepository.deleteAllByBlogId(blogId);
+        blogRepository.deleteByid(blogId);   // JPA로 변환안됨 ???
     }
 
     @Override
@@ -76,5 +84,19 @@ public class BlogServiceImpl implements BlogService {
         updatedBlog.setBlogContent(blog.getBlogContent());
 
         blogJPARepository.save(updatedBlog);
+    }
+
+
+    // pageNum 보정
+    public int getCalibratedPageNum(Long pageNum) {
+        // 사용자가 아무것도 안 넣은 경우
+        if(pageNum == null || pageNum <= 0) {
+            pageNum = 1L;
+        } else {
+            // 총 페이지 개수를 구하는 로직
+            int totalPagesCount = (int) Math.ceil(blogJPARepository.count() / 10.0);
+            pageNum = pageNum > totalPagesCount ? totalPagesCount : pageNum;
+        }
+        return pageNum.intValue();
     }
 }
