@@ -12,6 +12,7 @@ public interface BlogService {
     // 비즈니스 로직 정의
 
     // 전체 조회, 페이징 처리
+//    Page<Blog> findAll(Long pageNum);
     Page<Blog> findAll(Long pageNum);
     // 개별 조회
     Blog findByid(long blogId);

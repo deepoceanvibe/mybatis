@@ -11,5 +11,7 @@ public interface BlogJPARepository extends JpaRepository<Blog, Long> {      // �
 
 
     // 페이징 처리 : 페이징 정보를 받는 findAll '오버로딩'
+//    Page<Blog> findAll(Pageable pageable);
+
     Page<Blog> findAll(Pageable pageable);
 }
