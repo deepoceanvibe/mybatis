@@ -1,16 +1,17 @@
 package com.spring.blog.config;
 
-import com.spring.blog.service.UserService;
-import jakarta.servlet.DispatcherType;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
+        import com.spring.blog.service.UserService;
+        import jakarta.servlet.DispatcherType;
+        import org.springframework.beans.factory.annotation.Autowired;
+        import org.springframework.context.annotation.Bean;
+        import org.springframework.context.annotation.Configuration;
+        import org.springframework.security.authentication.AuthenticationManager;
+        import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+        import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+        import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+        import org.springframework.security.core.userdetails.UserDetailsService;
+        import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+        import org.springframework.security.web.SecurityFilterChain;
 
 // 베이직 인증 방식 설정
 @Configuration
@@ -18,6 +19,7 @@ public class BasicSecurityConfig {
 
     private final UserDetailsService userService;
 
+    @Autowired
     public BasicSecurityConfig(UserDetailsService userService) {
         this.userService = userService;
     }
@@ -37,21 +39,26 @@ public class BasicSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests (authorizationConfig -> {
-                    authorizationConfig.requestMatchers("/login", "/signup", "/user")
+                    authorizationConfig
+                            .requestMatchers("/login", "/signup", "/user")
                             .permitAll()
                             .anyRequest()
                             .authenticated();
                 })
                 .formLogin (formLoginConfig -> {
-                    formLoginConfig.loginPage("/login")
+                    formLoginConfig
+                            .loginPage("/login")
                             .defaultSuccessUrl("/blog/list");
                 })
                 .logout (logoutConfig -> {
-                    logoutConfig.logoutSuccessUrl("/login")
+                    logoutConfig
+                            .logoutUrl("/logout")
+                            .logoutSuccessUrl("/login")
                             .invalidateHttpSession(true);
                 })
                 .csrf (csrfConfig -> {
-                    csrfConfig.disable();
+                    csrfConfig
+                            .disable();
                 })
                 .build();
 

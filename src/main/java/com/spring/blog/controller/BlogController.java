@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.awt.event.PaintEvent;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -66,8 +68,11 @@ public class BlogController {
         return "blog/list";
     }
     @RequestMapping(value = "/detail/{blogId}")
-    public String detail(@PathVariable long blogId, Model model) {
+    public String detail(@PathVariable long blogId, Model model, Principal principal) {
+
+        model.addAttribute("username", principal.getName());
         Blog blog = blogService.findByid(blogId);
+
         if(blog == null) {
             try {
                 throw new NotFoundBlogIdException("없는 아이디로 조회했습니다.");
@@ -81,7 +86,11 @@ public class BlogController {
         return "blog/detail";
     }
     @RequestMapping(value = "/insert", method = RequestMethod.GET)
-    public String insert() {
+    public String insert(Model model, Principal principal) {
+
+        // SecurityContext, Principal은 둘 다 인증정보를 담고 있는 객체이다. 둘 중 편한거 쓰면됨
+
+        model.addAttribute("userName", principal.getName());
         return "blog/form";
     }
     @RequestMapping(value = "/insert", method = RequestMethod.POST)

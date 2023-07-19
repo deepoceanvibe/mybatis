@@ -4,28 +4,35 @@ import com.spring.blog.entity.User;
 import com.spring.blog.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class UserController {
+
     private final UsersService usersService;
 
     @Autowired
-    public UserController(UsersService usersService) {
+    public UserController(UsersService usersService){
         this.usersService = usersService;
     }
 
-    @GetMapping("/login")
-    public String login() {
+
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public String login(){
         return "user/login";
     }
-    @GetMapping("/signup")
-    public String signupForm() {
+
+
+    @RequestMapping(value = "/signup", method = RequestMethod.GET)
+    public String signUp(){
         return "user/signup";
     }
-    @PostMapping("/signup")
-    public String signup() {
+
+
+    @RequestMapping(value = "/signup", method = RequestMethod.POST)
+    public String signup(User user){
+        usersService.save(user);
         return "redirect:/login";
     }
 
