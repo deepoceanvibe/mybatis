@@ -12,7 +12,7 @@
     <div class=".container">
         <form action="/login" method="POST">
             <div class="col-3">
-                <input type="text" name="username" placeholder="아이디">
+                <input type="text" name="loginId" placeholder="아이디">
             </div>
             <div class="col-3">
                 <input type="password" name="password" placeholder="비밀번호">

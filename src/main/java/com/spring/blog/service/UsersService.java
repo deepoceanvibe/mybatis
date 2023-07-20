@@ -33,4 +33,9 @@ public class UsersService {
 
         userRepository.save(newUser);
     }
+
+    // 아이디를 집어넣으면, 해당 계정 전체 정보를 얻어오기 > 컨트롤러에서 호출
+    public User getByCredentials(String loginId) {
+        return userRepository.findByLoginId(loginId);
+    }
 }

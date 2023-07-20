@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ReplyJPARepository extends JpaRepository<Reply, Long> {
 
-    // blogId를 기준으로 전체 댓글을 얻어오는 쿼리메서드 생성
+    // blogId를 기준으로 전체 댓글을 얻어오기
     List<Reply> findAllByBlogId(long blogId);
 
     // blogId를 기준으로 그 댓글을 전부 삭제

@@ -9,6 +9,7 @@ package com.spring.blog.config;
         import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
         import org.springframework.security.config.annotation.web.builders.HttpSecurity;
         import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+        import org.springframework.security.config.http.SessionCreationPolicy;
         import org.springframework.security.core.userdetails.UserDetailsService;
         import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
         import org.springframework.security.web.SecurityFilterChain;
@@ -47,14 +48,18 @@ public class BasicSecurityConfig {
                 })
                 .formLogin (formLoginConfig -> {
                     formLoginConfig
-                            .loginPage("/login")
-                            .defaultSuccessUrl("/blog/list");
+                            .disable();     // 토큰기반 로그인시에는 폼 로그인 막아야 함.
+//                            .loginPage("/login")
+//                            .defaultSuccessUrl("/blog/list");
                 })
                 .logout (logoutConfig -> {
                     logoutConfig
                             .logoutUrl("/logout")
                             .logoutSuccessUrl("/login")
                             .invalidateHttpSession(true);
+                })
+                .sessionManagement(sessionConfig -> {
+                    sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                 })
                 .csrf (csrfConfig -> {
                     csrfConfig
